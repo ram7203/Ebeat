@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/home"
+        android:icon="@drawable/home"
+        android:title="Home"></item>
+
+    <item
+        android:id="@+id/schedule"
+        android:icon="@drawable/schedule"
+        android:title="Schedule"></item>
+
+    <item
+        android:id="@+id/placeholder"
+        android:title=""></item>
+
+    <item
+        android:id="@+id/report"
+        android:icon="@drawable/report"
+        android:title="Reports"></item>
+
+    <item
+        android:id="@+id/profile"
+        android:icon="@drawable/police"
+        android:title="Profile"></item>
+
+</menu>
