@@ -147,13 +147,12 @@ public class AddReportFragment extends Fragment {
         save_report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String rname = report_name.getText().toString().trim();
-                String rofficer = report_officer.getText().toString().trim();
-                int rno = Integer.parseInt(report_number.getText().toString().trim());
+                String rname = report_name.getText().toString();
+                String rofficer = report_officer.getText().toString();
+                String rno = report_number.getText().toString();
                 Log.d("confirm", "onClick: "+rname);
-                Toast.makeText(dashboard, "!!!"+rname, Toast.LENGTH_SHORT).show();
 
-                if(type.isEmpty() || is_set==false || rname.isEmpty() || rofficer.isEmpty() || rno==0)
+                if(type.isEmpty() || is_set==false || rname.isEmpty() || rofficer.isEmpty() || rno.isEmpty())
                 {
                     Toast.makeText(dashboard, "Fill all fields!", Toast.LENGTH_SHORT).show();
                 }

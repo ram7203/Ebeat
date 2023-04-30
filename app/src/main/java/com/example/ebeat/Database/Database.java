@@ -14,7 +14,8 @@ public class Database {
 
     private Connection connection;
 
-    private final String host = "10.0.2.2";
+    private final String host = "192.168.10.43";
+//    private final String host = "10.0.2.2";
 
     private final String database = "NewDB";
     private final int port = 5432;
@@ -25,6 +26,7 @@ public class Database {
     private String name = "";
     List<ReportList> reportList;
     private String beat="";
+    private int count;
 
     public String login(String id, String password)
     {
@@ -68,6 +70,7 @@ public class Database {
                 }
                 catch (Exception e)
                 {
+                    Log.d("Database", "Error "+e.getMessage());
                     status = false;
                     System.out.print(e.getMessage());
                     e.printStackTrace();
@@ -215,6 +218,58 @@ public class Database {
                         }
                     }
 
+
+                    connection.close();
+                }
+                catch (Exception e)
+                {
+                    status = false;
+                    System.out.print(e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.start();
+        try
+        {
+            thread.join();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            this.status = false;
+        }
+    }
+
+    public int get_count(String id)
+    {
+        count = 0;
+
+        this.url = String.format(this.url, this.host, this.port, this.database);
+        count_connect(id);
+
+        return count;
+    }
+    void count_connect(String id)
+    {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run()
+            {
+                try
+                {
+                    Class.forName("org.postgresql.Driver");
+                    connection = DriverManager.getConnection(url, user, pass);
+                    Log.d("Database", "Connected Successfully");
+
+                    String sql = "SELECT * FROM report WHERE officer_id=? and time_stamp>=current_date and time_stamp<current_date + interval '1 day'";
+                    PreparedStatement statement = connection.prepareStatement(sql);
+
+                    statement.setString(1, id);
+
+                    ResultSet result = statement.executeQuery();
+                    while(result.next())
+                        count++;
 
                     connection.close();
                 }

@@ -3,4 +3,5 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="select">Select Type</string>
+    <string name="api_key">a2697d23bd9249aea9fb640c968305a4</string>
 </resources>

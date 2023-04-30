@@ -31,7 +31,7 @@ import java.util.List;
  */
 public class HomeFragment extends Fragment implements Adapter.OnItemListener{
 
-    TextView name, id;
+    TextView name, id, warning;
     RecyclerView recyclerView;
     LinearLayoutManager linearLayoutManager;
     List<ReportList> reportlist;
@@ -92,13 +92,16 @@ public class HomeFragment extends Fragment implements Adapter.OnItemListener{
 
         name = view.findViewById(R.id.name);
         id = view.findViewById(R.id.id);
-        recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView = view.findViewById(R.id.recyclerView_home);
+        warning = view.findViewById(R.id.warning);
 
         name.setText("Hi, "+dashboard.name);
         id.setText(dashboard.id+"(id)");
 
         Database db = new Database();
         reportlist = db.get_reports(dashboard.id, true);
+        if(reportlist.isEmpty())
+            warning.setVisibility(View.VISIBLE);
 //        Log.d("beat", "onViewCreated: "+reportlist.get(0).getDate());
 
         addtoRecycletView(reportlist);
