@@ -9,6 +9,15 @@ public class ReportList {
     String place_name;
     String place_type;
     byte[] image;
+    String remarks;
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
 
     public Date getTime_stamp() {
         return time_stamp;
@@ -34,7 +43,7 @@ public class ReportList {
         this.image = image;
     }
 
-    public ReportList(String officer_name, String officer_id, Date date, Date time_stamp, String place_name, String place_type, byte[] image) {
+    public ReportList(String officer_name, String officer_id, Date date, Date time_stamp, String place_name, String place_type, byte[] image, String remarks) {
         this.officer_name = officer_name;
         this.officer_id = officer_id;
         this.date = date;
@@ -42,6 +51,7 @@ public class ReportList {
         this.place_name = place_name;
         this.place_type = place_type;
         this.image = image;
+        this.remarks = remarks;
     }
 
     public String getOfficer_name() {

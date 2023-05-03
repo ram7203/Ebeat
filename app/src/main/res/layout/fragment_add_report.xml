@@ -34,28 +34,26 @@
                 <AutoCompleteTextView
                     android:id="@+id/auto_complete_text"
                     android:layout_width="350dp"
-                    android:layout_height="50dp"></AutoCompleteTextView>
+                    android:layout_height="55dp"></AutoCompleteTextView>
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayout2"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:hint="Select Place Name"
                 android:layout_marginTop="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/textInputLayout1">
 
-                <EditText
+                <AutoCompleteTextView
                     android:id="@+id/report_name"
                     android:layout_width="350dp"
-                    android:layout_height="50dp"
-                    android:background="@color/white"
-                    android:hint="Enter name"
-                    android:inputType="text"
-                    android:textColor="@color/black"></EditText>
+                    android:layout_height="55dp"></AutoCompleteTextView>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -72,7 +70,7 @@
                 <EditText
                     android:id="@+id/report_officer"
                     android:layout_width="350dp"
-                    android:layout_height="50dp"
+                    android:layout_height="55dp"
                     android:background="@color/white"
                     android:hint="Enter Officer in charge"
                     android:inputType="text"
@@ -92,10 +90,31 @@
                 <EditText
                     android:id="@+id/report_number"
                     android:layout_width="350dp"
-                    android:layout_height="50dp"
+                    android:layout_height="55dp"
                     android:background="@color/white"
-                    android:hint="Enter phone no. of Officer in charge"
+                    android:hint="Enter officer ID"
                     android:inputType="number"
+                    android:textColor="@color/black"></EditText>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayout5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textInputLayout4">
+
+                <EditText
+                    android:id="@+id/remarks"
+                    android:layout_width="350dp"
+                    android:layout_height="200dp"
+                    android:background="@color/white"
+                    android:hint="Enter Remarks"
+                    android:gravity="top"
+                    android:inputType="text"
                     android:textColor="@color/black"></EditText>
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -108,31 +127,63 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.497"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textInputLayout4"></ImageView>
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayout5"></ImageView>
 
-            <RelativeLayout
-                android:id="@+id/upload_image"
-                android:layout_width="100dp"
-                android:layout_height="40dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="20dp"
-                android:background="@drawable/button_design"
+            <LinearLayout
+                android:id="@+id/linear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/imageView2">
+                app:layout_constraintTop_toBottomOf="@id/imageView2"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp"
+                >
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:fontFamily="sans-serif-condensed-medium"
-                    android:text="Upload Image"
-                    android:textColor="@color/white"
-                    android:textSize="15sp"
-                    android:textStyle="bold"></TextView>
-            </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/upload_image"
+                    android:layout_width="100dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/button_design"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/imageView2">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:fontFamily="sans-serif-condensed-medium"
+                        android:text="Upload Image"
+                        android:textColor="@color/white"
+                        android:textSize="15sp"
+                        android:textStyle="bold"></TextView>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/check"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/button_design"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/imageView2">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/check">
+
+                    </ImageView>
+                </RelativeLayout>
+
+            </LinearLayout>
 
             <RelativeLayout
                 android:id="@+id/save_report"
@@ -144,7 +195,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/upload_image">
+                app:layout_constraintTop_toBottomOf="@id/linear">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -161,12 +212,12 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:visibility="invisible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/save_report"
-                android:layout_marginTop="50dp"
-                android:visibility="invisible"></TextView>
+                app:layout_constraintTop_toBottomOf="@id/save_report"></TextView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

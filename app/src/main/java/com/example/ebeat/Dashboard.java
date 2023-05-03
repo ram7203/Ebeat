@@ -29,7 +29,6 @@ import com.example.ebeat.Fragments.ProfileFragment;
 import com.example.ebeat.Fragments.ReportFragment;
 import com.example.ebeat.Fragments.ScheduleFragment;
 import com.example.ebeat.databinding.ActivityDashboardBinding;
-//import com.google.android.gms.location.LocationListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
@@ -37,10 +36,11 @@ import java.util.Locale;
 
 public class Dashboard extends AppCompatActivity implements LocationListener {
     public ActivityDashboardBinding binding;
-    public String id, name;
+    public String id, name, rank, beat_id;
     public FloatingActionButton add;
     public TextView title;
     LocationManager locationManager;
+    public Double latitude, longitude;
 
 
 
@@ -53,6 +53,8 @@ public class Dashboard extends AppCompatActivity implements LocationListener {
         Intent intent = getIntent();
         id = intent.getStringExtra("id");
         name = intent.getStringExtra("name");
+        rank = intent.getStringExtra("rank");
+        beat_id = intent.getStringExtra("beat");
         add = findViewById(R.id.add);
         title = findViewById(R.id.textView);
 
@@ -79,8 +81,8 @@ public class Dashboard extends AppCompatActivity implements LocationListener {
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                replacefragment(new AddReportFragment());
                 getLocation();
+                replacefragment(new AddReportFragment());
             }
         });
 
@@ -116,10 +118,13 @@ public class Dashboard extends AppCompatActivity implements LocationListener {
 
     @Override
     public void onLocationChanged(@NonNull Location location) {
-        Toast.makeText(this, ""+location.getLatitude()+" "+location.getLongitude(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, ""+location.getLatitude()+" "+location.getLongitude(), Toast.LENGTH_SHORT).show();
         try {
             Geocoder geocoder = new Geocoder(Dashboard.this, Locale.getDefault());
             List<Address> address = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+//            Toast.makeText(this, "Latitude: "+location.getLatitude()+" Longitude: "+location.getLongitude(), Toast.LENGTH_SHORT).show();
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
 
         }
         catch (Exception e)

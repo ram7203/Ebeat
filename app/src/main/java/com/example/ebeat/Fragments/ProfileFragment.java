@@ -15,10 +15,12 @@ import android.widget.TextView;
 
 import com.example.ebeat.Dashboard;
 import com.example.ebeat.Database.Database;
+import com.example.ebeat.Database.OfficerList;
 import com.example.ebeat.Database.ReportList;
 import com.example.ebeat.MainActivity;
 import com.example.ebeat.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,8 +29,9 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class ProfileFragment extends Fragment {
-    TextView name, id, result;
+    TextView name, id, result, officer_id, rank, phone_no, supervisor;
     Button logout;
+    OfficerList officerList;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -88,14 +91,24 @@ public class ProfileFragment extends Fragment {
         id = view.findViewById(R.id.id);
         logout = view.findViewById(R.id.logout);
         result = view.findViewById(R.id.result);
+        officer_id = view.findViewById(R.id.officer_id);
+        rank = view.findViewById(R.id.rank);
+        phone_no = view.findViewById(R.id.phone_no);
+        supervisor = view.findViewById(R.id.supervisor);
 
         name.setText("Hi, "+dashboard.name);
         id.setText(dashboard.id+"(id)");
 
-        Database db = new Database();
-        int res = db.get_count(dashboard.id);
 
-        result.setText(String.valueOf(res));
+
+        Database db = new Database();
+        officerList = db.get_profile(dashboard.id);
+
+        result.setText(String.valueOf(officerList.getNo_of_patrols()));
+        officer_id.setText(officerList.getBeat_id());
+        rank.setText(officerList.getRank());
+        phone_no.setText(String.valueOf(officerList.getPhone_no()));
+        supervisor.setText(officerList.getSupervisor_name());
 
         logout.setOnClickListener(new View.OnClickListener() {
             @Override

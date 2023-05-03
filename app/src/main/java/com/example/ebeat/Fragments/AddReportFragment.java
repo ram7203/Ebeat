@@ -3,6 +3,11 @@ package com.example.ebeat.Fragments;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -15,7 +20,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
+import android.text.Editable;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +38,9 @@ import com.example.ebeat.Dashboard;
 import com.example.ebeat.Database.Database;
 import com.example.ebeat.R;
 import com.github.dhaval2404.imagepicker.ImagePicker;
+import com.google.android.gms.vision.Frame;
+import com.google.android.gms.vision.face.Face;
+import com.google.android.gms.vision.face.FaceDetector;
 
 import java.io.ByteArrayOutputStream;
 
@@ -40,15 +50,16 @@ import java.io.ByteArrayOutputStream;
  * create an instance of this fragment.
  */
 public class AddReportFragment extends Fragment {
-    String [] item = {"School", "Govt. Buildings", "Temples", "Malls"};
-    String type="";
-    AutoCompleteTextView autoCompleteTextView;
-    ArrayAdapter<String> adapterItems;
+    String [] item = {"Schools", "Govt. Buildings", "Temples", "Malls"};
+    String type="", place="";
+    AutoCompleteTextView autoCompleteTextView, report_name;
+    ArrayAdapter<String> adapterItems, placeAdapter;
     ImageView image;
-    RelativeLayout upload_image, save_report;
+    RelativeLayout upload_image, save_report, check;
     ActivityResultLauncher activityResultLauncher;
-    EditText report_name, report_officer, report_number;
-    boolean is_set;
+    EditText report_officer, report_number, remarks;
+    boolean is_set, is_valid;
+    Bitmap bitmap1;
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -103,15 +114,21 @@ public class AddReportFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         is_set = false;
+        is_valid = false;
         image = view.findViewById(R.id.imageView2);
+        check = view.findViewById(R.id.check);
         upload_image = view.findViewById(R.id.upload_image);
         save_report = view.findViewById(R.id.save_report);
         report_name = view.findViewById(R.id.report_name);
         report_number = view.findViewById(R.id.report_number);
         report_officer = view.findViewById(R.id.report_officer);
+        remarks = view.findViewById(R.id.remarks);
 
         Dashboard dashboard = (Dashboard) getActivity();
         dashboard.title.setText("Add Report");
+
+        report_officer.setText(dashboard.name);
+        report_number.setText(dashboard.id);
 
         autoCompleteTextView = view.findViewById(R.id.auto_complete_text);
         adapterItems = new ArrayAdapter<String>(getContext(), R.layout.list_item, item);
@@ -123,8 +140,23 @@ public class AddReportFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 type = parent.getItemAtPosition(position).toString();
                 Toast.makeText(dashboard, "Type"+type, Toast.LENGTH_SHORT).show();
+
+                Database db = new Database();
+                String [] places = db.get_places(type, dashboard.beat_id);
+
+                placeAdapter = new ArrayAdapter<>(getContext(), R.layout.list_item, places);
+                report_name.setAdapter(placeAdapter);
+
+                report_name.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        place = parent.getItemAtPosition(position).toString();
+                    }
+                });
             }
         });
+
+
 
         upload_image.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,40 +170,57 @@ public class AddReportFragment extends Fragment {
             @Override
             public void onActivityResult(ActivityResult result) {
                 Bundle bundle = result.getData().getExtras();
-                Bitmap bitmap = (Bitmap) bundle.get("data");
-                image.setImageBitmap(bitmap);
+                bitmap1 = (Bitmap) bundle.get("data");
+                image.setImageBitmap(bitmap1);
                 is_set = true;
+            }
+        });
+
+        check.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                image.buildDrawingCache();
+//                Bitmap bitmap1 = image.getDrawingCache();
+                detectFace(bitmap1);
             }
         });
 
         save_report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String rname = report_name.getText().toString();
+                String rname = place;
                 String rofficer = report_officer.getText().toString();
                 String rno = report_number.getText().toString();
+                String remark_txt = remarks.getText().toString();
                 Log.d("confirm", "onClick: "+rname);
 
-                if(type.isEmpty() || is_set==false || rname.isEmpty() || rofficer.isEmpty() || rno.isEmpty())
+                if(type.isEmpty() || is_set==false || rname.isEmpty() || rofficer.isEmpty() || rno.isEmpty() || remark_txt.isEmpty())
                 {
                     Toast.makeText(dashboard, "Fill all fields!", Toast.LENGTH_SHORT).show();
                 }
+                else if(is_valid==false)
+                {
+                    Toast.makeText(dashboard, "Image should be verified", Toast.LENGTH_SHORT).show();
+                }
                 else
                 {
-                    image.buildDrawingCache();
-                    Bitmap bitmap = image.getDrawingCache();
+//                    image.buildDrawingCache();
+//                    Bitmap bitmap = image.getDrawingCache();
+
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                    bitmap1.compress(Bitmap.CompressFormat.PNG, 100, baos);
                     byte[] imageBytes = baos.toByteArray();
 
                     Database db = new Database();
-                    boolean state = db.add_report(dashboard.id, rname, type, imageBytes);
+                    boolean state = db.add_report(dashboard.id, rname, type, imageBytes, dashboard.latitude, dashboard.longitude, remark_txt);
                     if(state)
                     {
                         Toast.makeText(dashboard, "Report added successfully!", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(getContext(), Dashboard.class);
                         intent.putExtra("id", dashboard.id);
                         intent.putExtra("name", dashboard.name);
+                        intent.putExtra("rank", dashboard.rank);
+                        intent.putExtra("beat", dashboard.beat_id);
                         startActivity(intent);
                     }
                     else
@@ -179,6 +228,53 @@ public class AddReportFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private void detectFace(Bitmap bitmap)
+    {
+        Paint boxPaint = new Paint();
+        boxPaint.setStrokeWidth(5);
+        boxPaint.setColor(Color.GREEN);
+        boxPaint.setStyle(Paint.Style.STROKE);
+
+        Bitmap tempBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.RGB_565);
+        Canvas canvas = new Canvas(tempBitmap);
+        canvas.drawBitmap(bitmap, 0, 0, null);
+
+        FaceDetector faceDetector = new FaceDetector.Builder(getContext())
+                .setTrackingEnabled(false)
+                .setLandmarkType(FaceDetector.ALL_LANDMARKS)
+                .setMode(FaceDetector.FAST_MODE)
+                .build();
+        if(!faceDetector.isOperational())
+        {
+            Toast.makeText(getContext(), "Face Detector needs to set up. Please RESTART your app", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Frame frame = new Frame.Builder().setBitmap(bitmap).build();
+        SparseArray<Face> sparseArray = faceDetector.detect(frame);
+
+        if(sparseArray.size()==0)
+            Toast.makeText(getContext(), "Face not visible!", Toast.LENGTH_SHORT).show();
+        else
+        {
+            is_valid = true;
+            Toast.makeText(getContext(), "Face Detected!", Toast.LENGTH_SHORT).show();
+        }
+//        Log.d("anushka", "detectFace: "+sparseArray.size());
+
+        for(int i=0;i<sparseArray.size();i++) {
+            Face face = sparseArray.valueAt(i);
+            float x1 = face.getPosition().x;
+            float y1 = face.getPosition().y;
+            float x2 = x1 + face.getWidth();
+            float y2 = y1 + face.getHeight();
+            RectF rectF = new RectF(x1, y1, x2, y2);
+            canvas.drawRoundRect(rectF, 2, 2, boxPaint);
+        }
+        image.setImageDrawable(new BitmapDrawable(getResources(), tempBitmap));
+//        return true;
+
     }
 
 }

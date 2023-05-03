@@ -9,10 +9,14 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ebeat.Adapter;
@@ -21,6 +25,7 @@ import com.example.ebeat.Database.Database;
 import com.example.ebeat.Database.ReportList;
 import com.example.ebeat.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,6 +39,8 @@ public class ScheduleFragment extends Fragment implements Adapter.OnItemListener
     LinearLayoutManager linearLayoutManager;
     List<ReportList> reportlist;
     Adapter adapter;
+    TextView warning;
+    EditText search;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -91,12 +98,35 @@ public class ScheduleFragment extends Fragment implements Adapter.OnItemListener
         dashboard.title.setText("Recent Patrols");
 
         recyclerView = view.findViewById(R.id.recyclerView1);
+        warning = view.findViewById(R.id.warning);
+        search = view.findViewById(R.id.search);
 
         Database db = new Database();
-        reportlist = db.get_reports(dashboard.id, false);
+        reportlist = db.get_reports(dashboard.beat_id, false);
         Log.d("beat", "onViewCreated: "+reportlist.get(0).getDate());
 
-        addtoRecycletView(reportlist);
+        if(!reportlist.isEmpty())
+            addtoRecycletView(reportlist);
+        else
+            warning.setVisibility(View.INVISIBLE);
+
+        search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                filter(s.toString());
+            }
+        });
+
     }
 
     @Override
@@ -118,5 +148,18 @@ public class ScheduleFragment extends Fragment implements Adapter.OnItemListener
         adapter = new Adapter(list, this);
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+    }
+
+    private void filter(String text)
+    {
+        ArrayList<ReportList> filteredList = new ArrayList<>();
+        for (ReportList item: reportlist)
+        {
+            if(item.getPlace_name().toLowerCase().contains(text.toLowerCase()))
+            {
+                filteredList.add(item);
+            }
+        }
+        adapter.filterList(filteredList);
     }
 }

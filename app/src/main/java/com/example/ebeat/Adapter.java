@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.ebeat.Database.ReportList;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -80,5 +81,11 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder>{
     }
     public interface OnItemListener{
         void onItemClick(int position);
+    }
+
+    public void filterList(ArrayList<ReportList> filteredList)
+    {
+        reportlist = filteredList;
+        notifyDataSetChanged();
     }
 }

@@ -29,7 +29,7 @@ import java.util.List;
 public class ReportInfoFragment extends Fragment {
     private List<ReportList> reportlist;
     int pos;
-    TextView type, report_name, report_officer, report_number, time_stamp;
+    TextView type, report_name, report_officer, report_number, time_stamp, remarks;
     ImageView image;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -99,6 +99,7 @@ public class ReportInfoFragment extends Fragment {
         report_number = view.findViewById(R.id.report_number);
         image = view.findViewById(R.id.imageView2);
         time_stamp = view.findViewById(R.id.time_stamp);
+        remarks = view.findViewById(R.id.remarks);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); // choose a desired date format to match the format of the Date object
         String dateString = dateFormat.format(reportlist.get(pos).getTime_stamp()); // convert Date to String
@@ -107,6 +108,7 @@ public class ReportInfoFragment extends Fragment {
         report_name.setText("Place Name: "+reportlist.get(pos).getPlace_name());
         report_officer.setText("Officer Incharge: "+reportlist.get(pos).getOfficer_name());
         report_number.setText("Officer Incharge ID: "+reportlist.get(pos).getOfficer_id());
+        remarks.setText(reportlist.get(pos).getRemarks());
         time_stamp.setText("Visited On: "+dateString);
 
         byte[] imagedata = reportlist.get(pos).getImage();

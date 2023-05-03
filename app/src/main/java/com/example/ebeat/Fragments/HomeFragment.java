@@ -99,7 +99,7 @@ public class HomeFragment extends Fragment implements Adapter.OnItemListener{
         id.setText(dashboard.id+"(id)");
 
         Database db = new Database();
-        reportlist = db.get_reports(dashboard.id, true);
+        reportlist = db.get_reports(dashboard.beat_id, true);
         if(reportlist.isEmpty())
             warning.setVisibility(View.VISIBLE);
 //        Log.d("beat", "onViewCreated: "+reportlist.get(0).getDate());
