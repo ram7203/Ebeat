@@ -24,6 +24,7 @@ Beat Officer Side
 ![App Screenshot](https://i.postimg.cc/9fNzc8Bc/785410b5-74ef-4505-8357-09289862de3c.jpg)
 
 Supervisor Side
+
 ![App Screenshot](https://i.postimg.cc/dQCDK9ZK/915c4138-fc64-4b7b-8873-ebeda5da219f.jpg)
 
 ![App Screenshot](https://i.postimg.cc/XvT32T8B/a9b3dbed-352e-4142-bb9d-28f8e9cb1fa6.jpg)
